@@ -1,6 +1,6 @@
 ﻿module helpers {
 
-   export   module escape {
+    export module escape {
 
         export const escapeTest = /[&<>"']/;
         export const escapeReplace = /[&<>"']/g;
@@ -63,7 +63,7 @@
         };
     }
 
-    export function cleanUrl(sanitize, base, href) {
+    export function cleanUrl(sanitize: boolean, base: string, href: string): string {
         if (sanitize) {
             try {
                 var prot = decodeURIComponent(unescape(href))
@@ -87,7 +87,7 @@
         return href;
     }
 
-    export function resolveUrl(base, href) {
+    export function resolveUrl(base: string, href: string): string {
         if (!baseUrls[' ' + base]) {
             // we can ignore everything in base after the last slash of its path component,
             // but we might need to add _that_
@@ -110,7 +110,7 @@
     }
 
     var baseUrls = {};
-    var originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
+    const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
     function noop() { }
     noop.exec = noop;

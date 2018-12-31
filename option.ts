@@ -5,7 +5,7 @@
     gfm: boolean;
     headerIds: boolean;
     headerPrefix: string;
-    highlight: string;
+    highlight: (code: string, lang: string) => string;
     langPrefix: string;
     mangle: boolean;
     pedantic: boolean;

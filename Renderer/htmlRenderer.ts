@@ -1,6 +1,12 @@
-﻿module renderer {
+﻿class htmlRenderer implements Renderer {
 
-    export function code(code: string, infostring, escaped: boolean): string {
+    private options: option;
+
+    public constructor(opt: option) {
+        this.options = opt;
+    }
+
+    public code(code: string, infostring, escaped: boolean): string {
         var lang = (infostring || '').match(/\S*/)[0];
 
         if (this.options.highlight) {
@@ -25,11 +31,11 @@
             + '</code></pre>\n';
     };
 
-    export function blockquote(quote) {
+    public blockquote(quote) {
         return '<blockquote>\n' + quote + '</blockquote>\n';
     };
 
-    export function heading(text: string, level: string, raw: string): string {
+    public heading(text: string, level: string, raw: string): string {
         if (this.options.headerIds) {
             return '<h'
                 + level
@@ -46,21 +52,21 @@
         return '<h' + level + '>' + text + '</h' + level + '>\n';
     };
 
-    export function hr() {
+    public hr() {
         return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
     };
 
-    export function list(body, ordered, start) {
+    public list(body, ordered, start) {
         var type = ordered ? 'ol' : 'ul',
             startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
         return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
     };
 
-    export function listitem(text: string): string {
+    public listitem(text: string): string {
         return '<li>' + text + '</li>\n';
     };
 
-    export function checkbox(checked) {
+    public checkbox(checked) {
         return '<input '
             + (checked ? 'checked="" ' : '')
             + 'disabled="" type="checkbox"'
@@ -68,11 +74,11 @@
             + '> ';
     };
 
-    export function paragraph(text) {
+    public paragraph(text) {
         return '<p>' + text + '</p>\n';
     };
 
-    export function table(header, body) {
+    public table(header, body) {
         if (body) body = '<tbody>' + body + '</tbody>';
 
         return '<table>\n'
@@ -83,11 +89,11 @@
             + '</table>\n';
     };
 
-    export function tablerow(content) {
+    public tablerow(content) {
         return '<tr>\n' + content + '</tr>\n';
     };
 
-    export function tablecell(content, flags) {
+    public tablecell(content, flags) {
         var type = flags.header ? 'th' : 'td';
         var tag = flags.align
             ? '<' + type + ' align="' + flags.align + '">'
@@ -96,27 +102,27 @@
     };
 
     // span level renderer
-    export function strong(text) {
+    public strong(text) {
         return '<strong>' + text + '</strong>';
     };
 
-    export function em(text) {
+    public em(text) {
         return '<em>' + text + '</em>';
     };
 
-    export function codespan(text) {
+    public codespan(text) {
         return '<code>' + text + '</code>';
     };
 
-    export function br() {
+    public br() {
         return this.options.xhtml ? '<br/>' : '<br>';
     };
 
-    export function del(text) {
+    public del(text) {
         return '<del>' + text + '</del>';
     };
 
-    export function link(href, title, text) {
+    public link(href, title, text) {
         href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
         if (href === null) {
             return text;
@@ -129,7 +135,7 @@
         return out;
     };
 
-    export function image(href, title, text) {
+    public image(href, title, text) {
         href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
         if (href === null) {
             return text;
@@ -142,17 +148,4 @@
         out += this.options.xhtml ? '/>' : '>';
         return out;
     };
-}
-
-interface Renderer {
-
-    strong(text: string): string;  
-    em(text: string): string;   
-    codespan(text: string): string;   
-    del(text: string): string;   
-    text(text: string): string;  
-    image(href: string, title: string, text: string): string;  
-    link(href: string, title: string, text: string): string; 
-    br(): string;
-    
 }
