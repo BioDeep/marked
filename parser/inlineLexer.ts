@@ -1,12 +1,15 @@
-﻿module inlineLexer {
+﻿
+/**
+ * Inline Lexer & Compiler
+*/
+class inlineLexer implements component {
 
+    public options: option;
 
+    private renderer: Renderer;
+    private links: string[];
 
-    /**
-     * Inline Lexer & Compiler
-     */
-
-    function InlineLexer(links, options) {
+    public constructor(links, options) {
         this.options = options || marked.defaults;
         this.links = links;
         this.rules = inline.normal;
@@ -32,13 +35,13 @@
      * Expose Inline Rules
      */
 
-    InlineLexer.rules = inline;
+    public rules = inline;
 
     /**
      * Static Lexing/Compiling Method
      */
 
-    InlineLexer.output = function (src, links, options) {
+    public output(src, links, options) {
         var inline = new InlineLexer(links, options);
         return inline.output(src);
     };
@@ -47,7 +50,7 @@
      * Lexing/Compiling
      */
 
-    InlineLexer.prototype.output = function (src) {
+    public output(src) {
         var out = '',
             link,
             text,
@@ -220,7 +223,7 @@
         return out;
     };
 
-    InlineLexer.escapes = function (text) {
+    public escapes(text: string) {
         return text ? text.replace(InlineLexer.rules._escapes, '$1') : text;
     };
 
@@ -228,7 +231,7 @@
      * Compile Link
      */
 
-    InlineLexer.prototype.outputLink = function (cap, link) {
+    public outputLink(cap, link) {
         var href = link.href,
             title = link.title ? escape(link.title) : null;
 
@@ -241,7 +244,7 @@
      * Smartypants Transformations
      */
 
-    InlineLexer.prototype.smartypants = function (text) {
+    public smartypants(text) {
         if (!this.options.smartypants) return text;
         return text
             // em-dashes
@@ -264,7 +267,7 @@
      * Mangle Links
      */
 
-    InlineLexer.prototype.mangle = function (text) {
+    public mangle(text) {
         if (!this.options.mangle) return text;
         var out = '',
             l = text.length,

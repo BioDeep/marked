@@ -1,10 +1,12 @@
-﻿module lexer {
+﻿
+/**
+ * Block Lexer
+ */
+class Lexer {
 
-    /**
-     * Block Lexer
-     */
+    private tokens: string[];
 
-    function Lexer(options) {
+    public constructor(options: option) {
         this.tokens = [];
         this.tokens.links = Object.create(null);
         this.options = options || marked.defaults;
@@ -23,24 +25,18 @@
 
     /**
      * Expose Block Rules
-     */
+    */
+    public rules = block;
 
-    Lexer.rules = block;
-
-    /**
-     * Static Lex Method
-     */
-
-    Lexer.lex = function (src, options) {
+    public static lex = function (src, options) {
         var lexer = new Lexer(options);
         return lexer.lex(src);
     };
 
     /**
      * Preprocessing
-     */
-
-    Lexer.prototype.lex = function (src) {
+    */
+    public lex(src: string): string {
         src = src
             .replace(/\r\n|\r/g, '\n')
             .replace(/\t/g, '    ')
@@ -52,9 +48,8 @@
 
     /**
      * Lexing
-     */
-
-    Lexer.prototype.token = function (src, top) {
+    */
+    public token(src: string, top) {
         src = src.replace(/^ +$/gm, '');
         var next,
             loose,
@@ -393,7 +388,5 @@
         }
 
         return this.tokens;
-    };
-
-
+    }
 }

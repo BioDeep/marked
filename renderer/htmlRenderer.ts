@@ -1,6 +1,8 @@
-﻿class htmlRenderer implements Renderer {
+﻿class htmlRenderer extends component implements Renderer {
 
-    private options: option;
+    public constructor(opt: option) {
+        super(opt);
+    }
 
     public text(text: string): string {
         return `<pre>${text}</pre>`;
