@@ -96,7 +96,7 @@ function marked(src, opt, callback) {
         e.message += '\nPlease report this to https://github.com/markedjs/marked.';
         if ((opt || marked.defaults).silent) {
             return '<p>An error occurred:</p><pre>'
-                + escape(e.message + '', true)
+                + helpers.escape.doescape(e.message + '', true)
                 + '</pre>';
         }
         throw e;
@@ -124,7 +124,7 @@ marked.getDefaults = function () {
         langPrefix: 'language-',
         mangle: true,
         pedantic: false,
-        renderer: new Renderer(),
+        renderer: new htmlRenderer(),
         sanitize: false,
         sanitizer: null,
         silent: false,

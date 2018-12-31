@@ -2,8 +2,8 @@
 
     private options: option;
 
-    public constructor(opt: option) {
-        this.options = opt;
+    public text(text: string): string {
+        return `<pre>${text}</pre>`;
     }
 
     public code(code: string, infostring, escaped: boolean): string {
