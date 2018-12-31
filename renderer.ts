@@ -1,15 +1,8 @@
 ﻿module renderer {
 
-    /**
-     * Renderer
-     */
-
-    function Renderer(options) {
-        this.options = options || marked.defaults;
-    }
-
-    Renderer.prototype.code = function (code, infostring, escaped) {
+    export function code(code: string, infostring, escaped: boolean): string {
         var lang = (infostring || '').match(/\S*/)[0];
+
         if (this.options.highlight) {
             var out = this.options.highlight(code, lang);
             if (out != null && out !== code) {
@@ -20,27 +13,23 @@
 
         if (!lang) {
             return '<pre><code>'
-                + (escaped ? code : escape(code, true))
+                + (escaped ? code : helpers.escape.doescape(code, true))
                 + '</code></pre>';
         }
 
         return '<pre><code class="'
             + this.options.langPrefix
-            + escape(lang, true)
+            + helpers.escape.doescape(lang, true)
             + '">'
-            + (escaped ? code : escape(code, true))
+            + (escaped ? code : helpers.escape.doescape(code, true))
             + '</code></pre>\n';
     };
 
-    Renderer.prototype.blockquote = function (quote) {
+    export function blockquote(quote) {
         return '<blockquote>\n' + quote + '</blockquote>\n';
     };
 
-    Renderer.prototype.html = function (html) {
-        return html;
-    };
-
-    Renderer.prototype.heading = function (text, level, raw) {
+    export function heading(text: string, level: string, raw: string): string {
         if (this.options.headerIds) {
             return '<h'
                 + level
@@ -57,21 +46,21 @@
         return '<h' + level + '>' + text + '</h' + level + '>\n';
     };
 
-    Renderer.prototype.hr = function () {
+    export function hr() {
         return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
     };
 
-    Renderer.prototype.list = function (body, ordered, start) {
+    export function list(body, ordered, start) {
         var type = ordered ? 'ol' : 'ul',
             startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
         return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
     };
 
-    Renderer.prototype.listitem = function (text) {
+    export function listitem(text: string): string {
         return '<li>' + text + '</li>\n';
     };
 
-    Renderer.prototype.checkbox = function (checked) {
+    export function checkbox(checked) {
         return '<input '
             + (checked ? 'checked="" ' : '')
             + 'disabled="" type="checkbox"'
@@ -79,11 +68,11 @@
             + '> ';
     };
 
-    Renderer.prototype.paragraph = function (text) {
+    export function paragraph(text) {
         return '<p>' + text + '</p>\n';
     };
 
-    Renderer.prototype.table = function (header, body) {
+    export function table(header, body) {
         if (body) body = '<tbody>' + body + '</tbody>';
 
         return '<table>\n'
@@ -94,11 +83,11 @@
             + '</table>\n';
     };
 
-    Renderer.prototype.tablerow = function (content) {
+    export function tablerow(content) {
         return '<tr>\n' + content + '</tr>\n';
     };
 
-    Renderer.prototype.tablecell = function (content, flags) {
+    export function tablecell(content, flags) {
         var type = flags.header ? 'th' : 'td';
         var tag = flags.align
             ? '<' + type + ' align="' + flags.align + '">'
@@ -107,28 +96,28 @@
     };
 
     // span level renderer
-    Renderer.prototype.strong = function (text) {
+    export function strong(text) {
         return '<strong>' + text + '</strong>';
     };
 
-    Renderer.prototype.em = function (text) {
+    export function em(text) {
         return '<em>' + text + '</em>';
     };
 
-    Renderer.prototype.codespan = function (text) {
+    export function codespan(text) {
         return '<code>' + text + '</code>';
     };
 
-    Renderer.prototype.br = function () {
+    export function br() {
         return this.options.xhtml ? '<br/>' : '<br>';
     };
 
-    Renderer.prototype.del = function (text) {
+    export function del(text) {
         return '<del>' + text + '</del>';
     };
 
-    Renderer.prototype.link = function (href, title, text) {
-        href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    export function link(href, title, text) {
+        href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
         if (href === null) {
             return text;
         }
@@ -140,8 +129,8 @@
         return out;
     };
 
-    Renderer.prototype.image = function (href, title, text) {
-        href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    export function image(href, title, text) {
+        href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
         if (href === null) {
             return text;
         }
@@ -153,8 +142,8 @@
         out += this.options.xhtml ? '/>' : '>';
         return out;
     };
+}
 
-    Renderer.prototype.text = function (text) {
-        return text;
-    };
+interface Renderer {
+
 }
