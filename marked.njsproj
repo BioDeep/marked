@@ -48,10 +48,10 @@
     <TypeScriptCompile Include="inlineLexer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="Renderer\renderer.ts">
+    <TypeScriptCompile Include="renderer2\renderer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="Renderer\textRenderer.ts">
+    <TypeScriptCompile Include="renderer2\textRenderer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="parser.ts">
@@ -63,13 +63,14 @@
     <TypeScriptCompile Include="option.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="Renderer\htmlRenderer.ts">
+    <TypeScriptCompile Include="renderer2\htmlRenderer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
-    <Folder Include="Renderer\" />
+    <Folder Include="parser\" />
+    <Folder Include="renderer2\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
