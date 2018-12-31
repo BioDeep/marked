@@ -18,7 +18,7 @@
     tables: boolean;
     xhtml: boolean;
 
-    public get Defaults(): option {
+    public static get Defaults(): option {
         return <option>{
             baseUrl: null,
             breaks: false,

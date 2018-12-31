@@ -1,7 +1,7 @@
 ﻿class htmlRenderer extends component implements Renderer {
 
-    public constructor(opt: option) {
-        super(opt);
+    public constructor() {
+        super(null);
     }
 
     public text(text: string): string {

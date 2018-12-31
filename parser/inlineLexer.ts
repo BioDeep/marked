@@ -2,18 +2,17 @@
 /**
  * Inline Lexer & Compiler
 */
-class inlineLexer implements component {
-
-    public options: option;
+class inlineLexer extends component {
 
     private renderer: Renderer;
     private links: string[];
 
-    public constructor(links, options) {
-        this.options = options || marked.defaults;
+    public constructor(links: string[], options: option = option.Defaults) {
+        super(options);
+
         this.links = links;
         this.rules = inline.normal;
-        this.renderer = this.options.renderer || new Renderer();
+        this.renderer = this.options.renderer || new htmlRenderer();
         this.renderer.options = this.options;
 
         if (!this.links) {
@@ -39,18 +38,16 @@ class inlineLexer implements component {
 
     /**
      * Static Lexing/Compiling Method
-     */
-
-    public output(src, links, options) {
-        var inline = new InlineLexer(links, options);
-        return inline.output(src);
+    */
+    public static Output(src: string, links: string[], options: option): string {
+        return new inlineLexer(links, options).output(src);
     };
 
     /**
      * Lexing/Compiling
      */
 
-    public output(src) {
+    public output(src: string): string {
         var out = '',
             link,
             text,
