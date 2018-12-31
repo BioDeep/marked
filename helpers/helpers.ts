@@ -46,12 +46,11 @@
         }
     }
 
-    export function edit(regex: RegExp | string, opt) {
+    export function edit(regex: RegExp | string, opt = '') {
         regex = (<RegExp>regex).source || regex;
-        opt = opt || '';
 
         return {
-            replace: function (name: string, val: RegExp | string) {
+            replace: function (name: string | RegExp, val: RegExp | string) {
                 val = (<RegExp>val).source || val;
                 val = (<string>val).replace(/(^|[^\[])\^/g, '$1');
                 regex = (<string>regex).replace(name, val);
@@ -115,7 +114,7 @@
     function noop() { }
     noop.exec = noop;
 
-    export function merge(obj) {
+    export function merge(obj: {}, ...arguments: {}[]) {
         var i = 1,
             target,
             key;
@@ -132,7 +131,7 @@
         return obj;
     }
 
-    export function splitCells(tableRow, count) {
+    export function splitCells(tableRow: string, count: number): string[] {
         // ensure that every cell-delimiting pipe has a space
         // before it to distinguish it from an escaped pipe
         var row = tableRow.replace(/\|/g, function (match, offset, str) {

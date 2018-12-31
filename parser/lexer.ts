@@ -23,11 +23,6 @@ class Lexer {
         }
     }
 
-    /**
-     * Expose Block Rules
-    */
-    public rules = block;
-
     public static lex = function (src, options) {
         var lexer = new Lexer(options);
         return lexer.lex(src);

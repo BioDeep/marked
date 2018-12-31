@@ -3,7 +3,7 @@
  * Block-Level Grammar
 */
 module block {
-    
+
     const block = {
         newline: /^\n+/,
         code: /^( {4}[^\n]+\n*)+/,
@@ -29,24 +29,21 @@ module block {
         paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/,
         text: /^[^\n]+/
     };
-
-
-
+       
     export const _label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
     export const _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
     export const def = helpers.edit(block.def)
-        .replace('label', block._label)
-        .replace('title', block._title)
+        .replace('label', _label)
+        .replace('title', _title)
         .getRegex();
 
     export const bullet = /(?:[*+-]|\d{1,9}\.)/;
-    export const item = /^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/;
-    export const item = helpers.edit(block.item, 'gm')
-        .replace(/bull/g, block.bullet)
+    export const item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
+        .replace(/bull/g, bullet)
         .getRegex();
 
-    export const list = edit(block.list)
-        .replace(/bull/g, block.bullet)
+    export const list = helpers.edit(block.list)
+        .replace(/bull/g, bullet)
         .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
         .replace('def', '\\n+(?=' + block.def.source + ')')
         .getRegex();
@@ -59,8 +56,8 @@ module block {
         + '|track|ul';
     export const _comment = /<!--(?!-?>)[\s\S]*?-->/;
     export const html = helpers.edit(block.html, 'i')
-        .replace('comment', block._comment)
-        .replace('tag', block._tag)
+        .replace('comment', _comment)
+        .replace('tag', _tag)
         .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
         .getRegex();
 
@@ -68,10 +65,10 @@ module block {
         .replace('hr', block.hr)
         .replace('heading', block.heading)
         .replace('lheading', block.lheading)
-        .replace('tag', block._tag) // pars can be interrupted by type (6) html blocks
+        .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
         .getRegex();
 
-    export const blockquote = edit(block.blockquote)
+    export const blockquote = helpers.edit(block.blockquote)
         .replace('paragraph', block.paragraph)
         .getRegex();
 
@@ -79,48 +76,58 @@ module block {
      * Normal Block Grammar
      */
 
-    export const normal = merge({}, block);
+    export function normal() {
+        return helpers.merge({}, block)
+    };
 
     /**
      * GFM Block Grammar
      */
 
-    export const gfm = merge({}, block.normal, {
-        fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
-        paragraph: /^/,
-        heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
-    });
+    export function gfm() {
+        var rule = helpers.merge({}, normal, {
+            fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
+            paragraph: /^/,
+            heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
+        });
 
-    export const gfm.paragraph = helpers.edit(block.paragraph)
-        .replace('(?!', '(?!'
-            + block.gfm.fences.source.replace('\\1', '\\2') + '|'
-            + block.list.source.replace('\\1', '\\3') + '|')
-        .getRegex();
+        rule.paragraph = helpers.edit(block.paragraph)
+            .replace('(?!', '(?!'
+                + rule.fences.source.replace('\\1', '\\2') + '|'
+                + block.list.source.replace('\\1', '\\3') + '|')
+            .getRegex();
+
+        return rule
+    } 
 
     /**
      * GFM + Tables Block Grammar
      */
 
-    export const tables = merge({}, block.gfm, {
-        nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
-        table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
-    });
+    export function tables() {
+        return helpers.merge({}, gfm, {
+            nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
+            table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
+        });
+    }
 
     /**
      * Pedantic grammar
      */
 
-    export const pedantic = merge({}, block.normal, {
-        html: helpers.edit(
-            '^ *(?:comment *(?:\\n|\\s*$)'
-            + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
-            + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
-            .replace('comment', block._comment)
-            .replace(/tag/g, '(?!(?:'
-                + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
-                + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'
-                + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
-            .getRegex(),
-        def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
-    });
+    export function pedantic() {
+        return helpers.merge({}, normal, {
+            html: helpers.edit(
+                '^ *(?:comment *(?:\\n|\\s*$)'
+                + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
+                + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
+                .replace('comment', _comment)
+                .replace(/tag/g, '(?!(?:'
+                    + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
+                    + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'
+                    + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
+                .getRegex(),
+            def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
+        });
+    } 
 }
