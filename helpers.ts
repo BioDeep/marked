@@ -1,68 +1,69 @@
 ﻿module helpers {
 
+    module escape {
 
-    /**
-     * Helpers
-     */
+        export const escapeTest = /[&<>"']/;
+        export const escapeReplace = /[&<>"']/g;
+        export const replacements = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        };
 
-    function escape(html, encode) {
-        if (encode) {
-            if (escape.escapeTest.test(html)) {
-                return html.replace(escape.escapeReplace, function (ch) { return escape.replacements[ch]; });
+        export const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+        export const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+
+        export function escape(html: string, encode: boolean): string {
+            if (encode) {
+                if (escapeTest.test(html)) {
+                    return html.replace(escapeReplace, ch => replacements[ch]);
+                }
+            } else {
+                if (escapeTestNoEncode.test(html)) {
+                    return html.replace(escapeReplaceNoEncode, ch => replacements[ch]);
+                }
             }
-        } else {
-            if (escape.escapeTestNoEncode.test(html)) {
-                return html.replace(escape.escapeReplaceNoEncode, function (ch) { return escape.replacements[ch]; });
-            }
+
+            return html;
         }
 
-        return html;
+        /**
+         * explicitly match decimal, hex, and named HTML entities
+        */
+        export function unescape(html: string): string {
+            return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function (_, n) {
+                n = n.toLowerCase();
+                if (n === 'colon') return ':';
+                if (n.charAt(0) === '#') {
+                    return n.charAt(1) === 'x'
+                        ? String.fromCharCode(parseInt(n.substring(2), 16))
+                        : String.fromCharCode(+n.substring(1));
+                }
+                return '';
+            });
+        }
     }
 
-    escape.escapeTest = /[&<>"']/;
-    escape.escapeReplace = /[&<>"']/g;
-    escape.replacements = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    };
-
-    escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-    escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
-
-    function unescape(html) {
-        // explicitly match decimal, hex, and named HTML entities
-        return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function (_, n) {
-            n = n.toLowerCase();
-            if (n === 'colon') return ':';
-            if (n.charAt(0) === '#') {
-                return n.charAt(1) === 'x'
-                    ? String.fromCharCode(parseInt(n.substring(2), 16))
-                    : String.fromCharCode(+n.substring(1));
-            }
-            return '';
-        });
-    }
-
-    function edit(regex, opt) {
-        regex = regex.source || regex;
+    export function edit(regex: RegExp | string, opt) {
+        regex = (<RegExp>regex).source || regex;
         opt = opt || '';
+
         return {
-            replace: function (name, val) {
-                val = val.source || val;
-                val = val.replace(/(^|[^\[])\^/g, '$1');
-                regex = regex.replace(name, val);
+            replace: function (name: string, val: RegExp | string) {
+                val = (<RegExp>val).source || val;
+                val = (<string>val).replace(/(^|[^\[])\^/g, '$1');
+                regex = (<string>regex).replace(name, val);
                 return this;
             },
             getRegex: function () {
-                return new RegExp(regex, opt);
+                return new RegExp(<string>regex, opt);
             }
         };
     }
 
-    function cleanUrl(sanitize, base, href) {
+    export function cleanUrl(sanitize, base, href) {
         if (sanitize) {
             try {
                 var prot = decodeURIComponent(unescape(href))
@@ -86,7 +87,7 @@
         return href;
     }
 
-    function resolveUrl(base, href) {
+    export function resolveUrl(base, href) {
         if (!baseUrls[' ' + base]) {
             // we can ignore everything in base after the last slash of its path component,
             // but we might need to add _that_
@@ -107,13 +108,14 @@
             return base + href;
         }
     }
+
     var baseUrls = {};
     var originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
     function noop() { }
     noop.exec = noop;
 
-    function merge(obj) {
+    export function merge(obj) {
         var i = 1,
             target,
             key;
@@ -130,7 +132,7 @@
         return obj;
     }
 
-    function splitCells(tableRow, count) {
+    export function splitCells(tableRow, count) {
         // ensure that every cell-delimiting pipe has a space
         // before it to distinguish it from an escaped pipe
         var row = tableRow.replace(/\|/g, function (match, offset, str) {
@@ -162,10 +164,13 @@
         return cells;
     }
 
-    // Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
-    // /c*$/ is vulnerable to REDOS.
-    // invert: Remove suffix of non-c chars instead. Default falsey.
-    function rtrim(str, c, invert) {
+    /**
+     * Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
+     * ``/c*$/`` is vulnerable to REDOS.
+     * 
+     * @param invert Remove suffix of non-c chars instead. Default falsey.
+    */
+    export function rtrim(str: string, c: string, invert: boolean): string {
         if (str.length === 0) {
             return '';
         }
