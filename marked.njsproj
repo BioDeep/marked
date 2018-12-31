@@ -36,6 +36,9 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="tsconfig.json" />
+    <TypeScriptCompile Include="helpers\Inoop.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="parser\block.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
