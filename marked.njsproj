@@ -36,16 +36,16 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="tsconfig.json" />
-    <TypeScriptCompile Include="block.ts">
+    <TypeScriptCompile Include="parser\block.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="lexer.ts">
+    <TypeScriptCompile Include="parser\lexer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="inline.ts">
+    <TypeScriptCompile Include="parser\inline.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="inlineLexer.ts">
+    <TypeScriptCompile Include="parser\inlineLexer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="renderer\renderer.ts">
@@ -54,7 +54,7 @@
     <TypeScriptCompile Include="renderer\textRenderer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="parser.ts">
+    <TypeScriptCompile Include="parser\parser.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="helpers\helpers.ts">
