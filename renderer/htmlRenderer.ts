@@ -76,7 +76,7 @@
             + '> ';
     };
 
-    public paragraph(text) {
+    public paragraph(text: string): string {
         return '<p>' + text + '</p>\n';
     };
 

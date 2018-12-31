@@ -4,6 +4,10 @@
 */
 class textRenderer implements Renderer {
 
+    public paragraph(text: string): string {
+        return text + "\n";
+    }
+
     public strong(text: string): string {
         return text;
     }

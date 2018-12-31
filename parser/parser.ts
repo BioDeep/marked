@@ -1,33 +1,34 @@
-﻿module parser {
+﻿
+/**
+ * Parsing & Compiling
+*/
+class parser extends component {
 
+    private renderer: Renderer;
+    private tokens: string[];
 
-    /**
-     * Parsing & Compiling
-     */
+    public constructor(options: option = option.Defaults) {
+        super(options);
 
-    function Parser(options) {
         this.tokens = [];
         this.token = null;
-        this.options = options || marked.defaults;
-        this.options.renderer = this.options.renderer || new Renderer();
+        this.options.renderer = this.options.renderer || new htmlRenderer();
         this.renderer = this.options.renderer;
         this.renderer.options = this.options;
     }
 
     /**
      * Static Parse Method
-     */
-
-    Parser.parse = function (src, options) {
+    */
+    public static parse(src, options) {
         var parser = new Parser(options);
         return parser.parse(src);
-    };
+    }
 
     /**
      * Parse Loop
-     */
-
-    Parser.prototype.parse = function (src) {
+    */
+    public parse(src: string): string {
         this.inline = new InlineLexer(src.links, this.options);
         // use an InlineLexer with a TextRenderer to extract pure text
         this.inlineText = new InlineLexer(
@@ -46,25 +47,22 @@
 
     /**
      * Next Token
-     */
-
-    Parser.prototype.next = function () {
+    */
+    public next() {
         return this.token = this.tokens.pop();
     };
 
     /**
      * Preview Next Token
-     */
-
-    Parser.prototype.peek = function () {
+    */
+    public peek() {
         return this.tokens[this.tokens.length - 1] || 0;
     };
 
     /**
      * Parse Text Tokens
-     */
-
-    Parser.prototype.parseText = function () {
+    */
+    public parseText() {
         var body = this.token.text;
 
         while (this.peek().type === 'text') {
@@ -76,9 +74,8 @@
 
     /**
      * Parse Current Token
-     */
-
-    Parser.prototype.tok = function () {
+    */
+    public tok() {
         switch (this.token.type) {
             case 'space': {
                 return '';
@@ -185,7 +182,5 @@
                 }
             }
         }
-    };
-
-
+    }
 }
