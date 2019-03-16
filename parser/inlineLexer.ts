@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="../models/component.ts" />
+
 /**
  * Inline Lexer & Compiler
 */

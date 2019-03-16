@@ -1,11 +1,15 @@
-﻿
+﻿/// <reference path="../models/component.ts" />
+/// <reference path="./inlineLexer.ts" />
+
 /**
  * Parsing & Compiling
 */
 class parser extends component {
 
     private renderer: Renderer;
-    private tokens: string[];
+    private tokens: Itoken[];
+    private inline: inlineLexer;
+    private token: Itoken;
 
     public constructor(options: option = option.Defaults) {
         super(options);
@@ -29,11 +33,11 @@ class parser extends component {
      * Parse Loop
     */
     public parse(src: string): string {
-        this.inline = new InlineLexer(src.links, this.options);
+        this.inline = new inlineLexer(src.links, this.options);
         // use an InlineLexer with a TextRenderer to extract pure text
-        this.inlineText = new InlineLexer(
+        this.inlineText = new inlineLexer(
             src.links,
-            merge({}, this.options, { renderer: new TextRenderer() })
+            merge({}, this.options, { renderer: new textRenderer() })
         );
         this.tokens = src.reverse();
 
@@ -65,7 +69,7 @@ class parser extends component {
     public parseText() {
         var body = this.token.text;
 
-        while (this.peek().type === 'text') {
+        while ((<any>this.peek()).type === 'text') {
             body += '\n' + this.next().text;
         }
 
@@ -75,7 +79,7 @@ class parser extends component {
     /**
      * Parse Current Token
     */
-    public tok() {
+    public tok(): string {
         switch (this.token.type) {
             case 'space': {
                 return '';
@@ -99,16 +103,12 @@ class parser extends component {
                     body = '',
                     i,
                     row,
-                    cell,
+                    cell: string = '',
                     j;
 
-                // header
-                cell = '';
+                // header         
                 for (i = 0; i < this.token.header.length; i++) {
-                    cell += this.renderer.tablecell(
-                        this.inline.output(this.token.header[i]),
-                        { header: true, align: this.token.align[i] }
-                    );
+                    cell += this.renderer.tablecell(this.inline.output(this.token.header[i]), { header: true, align: this.token.align[i] });
                 }
                 header += this.renderer.tablerow(cell);
 
@@ -156,7 +156,7 @@ class parser extends component {
                 }
 
                 while (this.next().type !== 'list_item_end') {
-                    body += !loose && this.token.type === 'text'
+                    body += !loose && (<any>this.token).type === 'text'
                         ? this.parseText()
                         : this.tok();
                 }

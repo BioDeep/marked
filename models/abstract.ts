@@ -37,3 +37,19 @@ interface Irule {
     paragraph: RegExp;
     heading: RegExp;
 }
+
+interface Itoken {
+    type: string;
+    depth: number;
+    text: string;
+    escaped: boolean;
+    lang: string;
+    align: string[];
+    header: string[];
+    cells: string[];
+    ordered: boolean;
+    start: number;
+    loose: boolean;
+    checked: boolean;
+    task: boolean;
+}
