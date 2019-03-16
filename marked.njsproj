@@ -72,15 +72,16 @@
     <TypeScriptCompile Include="renderer\htmlRenderer.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="component.ts">
+    <TypeScriptCompile Include="models\component.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="abstract.ts">
+    <TypeScriptCompile Include="models\abstract.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
+    <Folder Include="models\" />
     <Folder Include="parser\" />
     <Folder Include="renderer\" />
   </ItemGroup>

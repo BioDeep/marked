@@ -4,12 +4,9 @@
  * https://github.com/markedjs/marked
 */
 
-
-
 /**
  * Marked
- */
-
+*/
 function marked(src, opt, callback) {
     // throw error in case of non string input
     if (typeof src === 'undefined' || src === null) {

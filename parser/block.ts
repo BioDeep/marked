@@ -1,4 +1,4 @@
-﻿/// <reference path="../abstract.ts" />
+﻿/// <reference path="../models/abstract.ts" />
 
 /**
  * Block-Level Grammar
