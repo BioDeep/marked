@@ -1,12 +1,15 @@
 ﻿
 /**
  * Block Lexer
- */
+*/
 class Lexer {
 
-    private tokens: string[];
+    private tokens: Itoken[];
+    private rules: block;
 
     public constructor(private options: option) {
+        let block = options.block;
+
         this.tokens = [];
         this.tokens.links = Object.create(null);
         this.rules = options.block.normal;
@@ -30,7 +33,7 @@ class Lexer {
     /**
      * Preprocessing
     */
-    public lex(src: string): string {
+    public lex(src: string): Itoken[] {
         src = src
             .replace(/\r\n|\r/g, '\n')
             .replace(/\t/g, '    ')
@@ -67,7 +70,7 @@ class Lexer {
             if (cap = this.rules.newline.exec(src)) {
                 src = src.substring(cap[0].length);
                 if (cap[0].length > 1) {
-                    this.tokens.push({
+                    this.tokens.push(<Itoken>{
                         type: 'space'
                     });
                 }
@@ -77,7 +80,7 @@ class Lexer {
             if (cap = this.rules.code.exec(src)) {
                 src = src.substring(cap[0].length);
                 cap = cap[0].replace(/^ {4}/gm, '');
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'code',
                     text: !this.options.pedantic
                         ? rtrim(cap, '\n')
@@ -89,7 +92,7 @@ class Lexer {
             // fences (gfm)
             if (cap = this.rules.fences.exec(src)) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'code',
                     lang: cap[2] ? cap[2].trim() : cap[2],
                     text: cap[3] || ''
@@ -100,7 +103,7 @@ class Lexer {
             // heading
             if (cap = this.rules.heading.exec(src)) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'heading',
                     depth: cap[1].length,
                     text: cap[2]
@@ -112,7 +115,7 @@ class Lexer {
             if (top && (cap = this.rules.nptable.exec(src))) {
                 item = {
                     type: 'table',
-                    header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
+                    header: helpers.splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
                     align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
                     cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
                 };
@@ -133,7 +136,7 @@ class Lexer {
                     }
 
                     for (i = 0; i < item.cells.length; i++) {
-                        item.cells[i] = splitCells(item.cells[i], item.header.length);
+                        item.cells[i] = helpers.splitCells(item.cells[i], item.header.length);
                     }
 
                     this.tokens.push(item);
@@ -145,7 +148,7 @@ class Lexer {
             // hr
             if (cap = this.rules.hr.exec(src)) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'hr'
                 });
                 continue;
@@ -155,7 +158,7 @@ class Lexer {
             if (cap = this.rules.blockquote.exec(src)) {
                 src = src.substring(cap[0].length);
 
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'blockquote_start'
                 });
 
@@ -166,7 +169,7 @@ class Lexer {
                 // how markdown.pl works.
                 this.token(cap, top);
 
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'blockquote_end'
                 });
 
@@ -258,7 +261,7 @@ class Lexer {
                     // Recurse.
                     this.token(item, false);
 
-                    this.tokens.push({
+                    this.tokens.push(<Itoken>{
                         type: 'list_item_end'
                     });
                 }
@@ -271,7 +274,7 @@ class Lexer {
                     }
                 }
 
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'list_end'
                 });
 
@@ -285,8 +288,7 @@ class Lexer {
                     type: this.options.sanitize
                         ? 'paragraph'
                         : 'html',
-                    pre: !this.options.sanitizer
-                        && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
+                    pre: !this.options.sanitizer && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
                     text: cap[0]
                 });
                 continue;
@@ -310,7 +312,7 @@ class Lexer {
             if (top && (cap = this.rules.table.exec(src))) {
                 item = {
                     type: 'table',
-                    header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
+                    header: helpers.splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
                     align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
                     cells: cap[3] ? cap[3].replace(/(?: *\| *)?\n$/, '').split('\n') : []
                 };
@@ -331,7 +333,7 @@ class Lexer {
                     }
 
                     for (i = 0; i < item.cells.length; i++) {
-                        item.cells[i] = splitCells(
+                        item.cells[i] = helpers.splitCells(
                             item.cells[i].replace(/^ *\| *| *\| *$/g, ''),
                             item.header.length);
                     }
@@ -345,7 +347,7 @@ class Lexer {
             // lheading
             if (cap = this.rules.lheading.exec(src)) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'heading',
                     depth: cap[2] === '=' ? 1 : 2,
                     text: cap[1]
@@ -356,7 +358,7 @@ class Lexer {
             // top-level paragraph
             if (top && (cap = this.rules.paragraph.exec(src))) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'paragraph',
                     text: cap[1].charAt(cap[1].length - 1) === '\n'
                         ? cap[1].slice(0, -1)
@@ -369,7 +371,7 @@ class Lexer {
             if (cap = this.rules.text.exec(src)) {
                 // Top-level should never reach here.
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: 'text',
                     text: cap[0]
                 });

@@ -7,7 +7,7 @@ class block extends Grammer {
 
     _label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
     _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
-    bullet = /(?:[*+-]|\d{1,9}\.)/;
+
     _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
         + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
         + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
@@ -16,9 +16,10 @@ class block extends Grammer {
         + '|track|ul';
 
     public static _comment = /<!--(?!-?>)[\s\S]*?-->/;
+    public static bullet = /(?:[*+-]|\d{1,9}\.)/;
 
     item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
-        .replace(/bull/g, this.bullet)
+        .replace(/bull/g, block.bullet)
         .getRegex();
 
     /**
@@ -68,7 +69,7 @@ class block extends Grammer {
             .getRegex();
 
         this.list = helpers.edit(this.list)
-            .replace(/bull/g, this.bullet)
+            .replace(/bull/g, block.bullet)
             .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
             .replace('def', '\\n+(?=' + this.def.source + ')')
             .getRegex();
