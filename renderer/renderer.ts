@@ -1,5 +1,7 @@
 ﻿interface Renderer {
 
+    options: option;
+
     strong(text: string): string;
     em(text: string): string;
     codespan(text: string): string;

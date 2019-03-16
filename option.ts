@@ -18,6 +18,9 @@
     tables: boolean;
     xhtml: boolean;
 
+    block: block;
+    inline: inline;
+
     public static get Defaults(): option {
         return <option>{
             baseUrl: null,
@@ -36,7 +39,11 @@
             smartLists: false,
             smartypants: false,
             tables: true,
-            xhtml: false
+            xhtml: false,
+
+            // grammers
+            inline: new inline(),
+            block: new block()
         };
     }
 }

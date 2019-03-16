@@ -6,12 +6,16 @@ class inlineLexer extends component {
 
     private renderer: Renderer;
     private links: string[];
+    private inLink: boolean;
+    private inRawBlock: boolean;
 
     public constructor(links: string[], options: option = option.Defaults) {
         super(options);
 
+        let inline: inline = options.inline;
+
         this.links = links;
-        this.rules = inline.normal;
+        this.rules = options.inline.normal;
         this.renderer = this.options.renderer || new htmlRenderer();
         this.renderer.options = this.options;
 
@@ -34,7 +38,7 @@ class inlineLexer extends component {
      * Expose Inline Rules
      */
 
-    public rules = inline;
+    public rules: inline;
 
     /**
      * Static Lexing/Compiling Method
@@ -105,8 +109,8 @@ class inlineLexer extends component {
                 }
                 href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
                 out += this.outputLink(cap, {
-                    href: InlineLexer.escapes(href),
-                    title: InlineLexer.escapes(title)
+                    href: this.escapes(href),
+                    title: this.escapes(title)
                 });
                 this.inLink = false;
                 continue;
@@ -187,7 +191,7 @@ class inlineLexer extends component {
                     // do extended autolink path validation
                     do {
                         prevCapZero = cap[0];
-                        cap[0] = this.rules._backpedal.exec(cap[0])[0];
+                        cap[0] = (<any>this.rules)._backpedal.exec(cap[0])[0];
                     } while (prevCapZero !== cap[0]);
                     text = escape(cap[0]);
                     if (cap[1] === 'www.') {
@@ -221,7 +225,7 @@ class inlineLexer extends component {
     };
 
     public escapes(text: string) {
-        return text ? text.replace(InlineLexer.rules._escapes, '$1') : text;
+        return text ? text.replace(this.rules._escapes, '$1') : text;
     };
 
     /**
