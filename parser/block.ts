@@ -10,7 +10,7 @@ module block {
         fences: helpers.noop,
         hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
         heading: /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/,
-        nptable: noop,
+        nptable: helpers.noop,
         blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
         list: /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
         html: '^ {0,3}(?:' // optional indentation
@@ -24,12 +24,12 @@ module block {
             + '|</(?!script|pre|style)[a-z][\\w-]*\\s*>(?=\\h*\\n)[\\s\\S]*?(?:\\n{2,}|$)' // (7) closing tag
             + ')',
         def: /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/,
-        table: noop,
+        table: helpers.noop,
         lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
         paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/,
         text: /^[^\n]+/
     };
-       
+
     export const _label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
     export const _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
     export const def = helpers.edit(block.def)
@@ -98,7 +98,7 @@ module block {
             .getRegex();
 
         return rule
-    } 
+    }
 
     /**
      * GFM + Tables Block Grammar
@@ -129,5 +129,5 @@ module block {
                 .getRegex(),
             def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
         });
-    } 
+    }
 }

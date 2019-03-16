@@ -6,7 +6,7 @@
     var inline = {
         escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
         autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
-        url: noop,
+        url: helpers. noop,
         tag: '^comment'
             + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
             + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
@@ -20,7 +20,7 @@
         em: /^_([^\s_])_(?!_)|^\*([^\s*"<\[])\*(?!\*)|^_([^\s][\s\S]*?[^\s_])_(?!_|[^\spunctuation])|^_([^\s_][\s\S]*?[^\s])_(?!_|[^\spunctuation])|^\*([^\s"<\[][\s\S]*?[^\s*])\*(?!\*)|^\*([^\s*"<\[][\s\S]*?[^\s])\*(?!\*)/,
         code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
         br: /^( {2,}|\\)\n(?!\s*$)/,
-        del: noop,
+        del: helpers.noop,
         text: /^(`+|[^`])[\s\S]*?(?=[\\<!\[`*]|\b_| {2,}\n|$)/
     };
 
