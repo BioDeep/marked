@@ -14,7 +14,17 @@
     lheading: RegExp;
     paragraph: RegExp;
     text: RegExp;
-
+    br: RegExp;
+    em: RegExp;
+    del: RegExp;
+    escape: RegExp;
+    nolink: RegExp;
+    strong: RegExp;
+    tag: RegExp;
+    autolink: RegExp;
+    link: RegExp;
+    reflink: RegExp;
+    url: RegExp;
 }
 
 interface IEdits {

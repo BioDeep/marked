@@ -14,7 +14,8 @@ class block extends Grammer {
         + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
         + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
         + '|track|ul';
-    _comment = /<!--(?!-?>)[\s\S]*?-->/;
+
+    public static _comment = /<!--(?!-?>)[\s\S]*?-->/;
 
     item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
         .replace(/bull/g, this.bullet)
@@ -23,7 +24,7 @@ class block extends Grammer {
     public constructor() {
         super();
 
-        // initialize
+        // base class initialize
         this.newline = /^\n+/;
         this.code = /^( {4}[^\n]+\n*)+/;
         this.fences = <any>helpers.noop;
