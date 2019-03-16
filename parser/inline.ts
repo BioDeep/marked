@@ -1,10 +1,8 @@
 ﻿module inline {
-
-
+    
     /**
      * Inline-Level Grammar
-     */
-
+    */
     var inline = {
         escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
         autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,

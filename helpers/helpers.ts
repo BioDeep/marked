@@ -1,51 +1,5 @@
 ﻿module helpers {
 
-    export module escape {
-
-        export const escapeTest = /[&<>"']/;
-        export const escapeReplace = /[&<>"']/g;
-        export const replacements = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        };
-
-        export const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-        export const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
-
-        export function doescape(html: string, encode: boolean): string {
-            if (encode) {
-                if (escapeTest.test(html)) {
-                    return html.replace(escapeReplace, ch => replacements[ch]);
-                }
-            } else {
-                if (escapeTestNoEncode.test(html)) {
-                    return html.replace(escapeReplaceNoEncode, ch => replacements[ch]);
-                }
-            }
-
-            return html;
-        }
-
-        /**
-         * explicitly match decimal, hex, and named HTML entities
-        */
-        export function unescape(html: string): string {
-            return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function (_, n) {
-                n = n.toLowerCase();
-                if (n === 'colon') return ':';
-                if (n.charAt(0) === '#') {
-                    return n.charAt(1) === 'x'
-                        ? String.fromCharCode(parseInt(n.substring(2), 16))
-                        : String.fromCharCode(+n.substring(1));
-                }
-                return '';
-            });
-        }
-    }
-
     export function edit(regex: RegExp | string, opt = '') {
         regex = (<RegExp>regex).source || regex;
 
@@ -86,6 +40,8 @@
         return href;
     }
 
+    var baseUrls = {};
+
     export function resolveUrl(base: string, href: string): string {
         if (!baseUrls[' ' + base]) {
             // we can ignore everything in base after the last slash of its path component,
@@ -108,19 +64,38 @@
         }
     }
 
-    var baseUrls = {};
     const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
-    function noop() { }
-    noop.exec = noop;
+    /**
+     * 模拟正则表达式，因为正则表达式没有空操作，所以会需要用这个来进行模拟
+    */
+    export interface Inoop {
+        (): void;
+        /**
+         * Execute regexp
+        */
+        exec: Inoop;
+    }
 
-    export function merge(obj: {}, ...arguments: {}[]) {
-        var i = 1,
-            target,
-            key;
+    /**
+     * This regexp object do nothing.
+    */
+    export const noop: Inoop = (function () {
+        var empty: any = function noop(): void {
+            // do nothing
+        }
+        empty.exec = empty;
 
-        for (; i < arguments.length; i++) {
-            target = arguments[i];
+        // This regexp do nothing
+        return empty;
+    })()
+
+    export function merge(obj: {}, ...args: {}[]) {
+        var target, key: string;
+
+        for (var i = 1; i < args.length; i++) {
+            target = args[i];
+
             for (key in target) {
                 if (Object.prototype.hasOwnProperty.call(target, key)) {
                     obj[key] = target[key];

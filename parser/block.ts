@@ -7,7 +7,7 @@ module block {
     const block = {
         newline: /^\n+/,
         code: /^( {4}[^\n]+\n*)+/,
-        fences: noop,
+        fences: helpers.noop,
         hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
         heading: /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/,
         nptable: noop,
