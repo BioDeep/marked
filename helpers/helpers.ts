@@ -66,30 +66,6 @@
 
     const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
-    /**
-     * 模拟正则表达式，因为正则表达式没有空操作，所以会需要用这个来进行模拟
-    */
-    export interface Inoop {
-        (): void;
-        /**
-         * Execute regexp
-        */
-        exec: Inoop;
-    }
-
-    /**
-     * This regexp object do nothing.
-    */
-    export const noop: Inoop = (function () {
-        var empty: any = function noop(): void {
-            // do nothing
-        }
-        empty.exec = empty;
-
-        // This regexp do nothing
-        return empty;
-    })()
-
     export function merge(obj: {}, ...args: {}[]) {
         var target, key: string;
 
@@ -109,10 +85,13 @@
     export function splitCells(tableRow: string, count: number): string[] {
         // ensure that every cell-delimiting pipe has a space
         // before it to distinguish it from an escaped pipe
-        var row = tableRow.replace(/\|/g, function (match, offset, str) {
-            var escaped = false,
-                curr = offset;
-            while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
+        var row: string = tableRow.replace(/\|/g, function (match, offset, str) {
+            var escaped = false, curr = offset;
+
+            while (--curr >= 0 && str[curr] === '\\') {
+                escaped = !escaped
+            };
+
             if (escaped) {
                 // odd number of slashes means | is escaped
                 // so we leave it alone
@@ -121,9 +100,8 @@
                 // add space before unescaped |
                 return ' |';
             }
-        }),
-            cells = row.split(/ \|/),
-            i = 0;
+        });
+        var cells = row.split(/ \|/)
 
         if (cells.length > count) {
             cells.splice(count);
@@ -131,10 +109,11 @@
             while (cells.length < count) cells.push('');
         }
 
-        for (; i < cells.length; i++) {
+        for (var i: number = 0; i < cells.length; i++) {
             // leading or trailing whitespace is ignored per the gfm spec
             cells[i] = cells[i].trim().replace(/\\\|/g, '|');
         }
+
         return cells;
     }
 

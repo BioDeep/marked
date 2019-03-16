@@ -39,6 +39,9 @@
     <TypeScriptCompile Include="helpers\escape.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="helpers\noop.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="parser\block.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
