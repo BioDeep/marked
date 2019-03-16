@@ -124,7 +124,7 @@
      * 
      * @param invert Remove suffix of non-c chars instead. Default falsey.
     */
-    export function rtrim(str: string, c: string, invert: boolean): string {
+    export function rtrim(str: string, c: string, invert: boolean = false): string {
         if (str.length === 0) {
             return '';
         }

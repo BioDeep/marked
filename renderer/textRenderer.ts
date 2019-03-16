@@ -4,6 +4,42 @@
 */
 class textRenderer implements Renderer {
 
+    options: option;
+
+    code(text: string, lang: string, escaped: boolean): string {
+        throw new Error("Method not implemented.");
+    }
+    hr(): string {
+        throw new Error("Method not implemented.");
+    }
+    html(text: string): string {
+        throw new Error("Method not implemented.");
+    }
+    heading(text: string, depth: number, unescape: string): string {
+        throw new Error("Method not implemented.");
+    }
+    tablerow(cell: string): string {
+        throw new Error("Method not implemented.");
+    }
+    tablecell(text: string, opt: { header: boolean; align: string; }): string {
+        throw new Error("Method not implemented.");
+    }
+    table(thead: string, tbody: string): string {
+        throw new Error("Method not implemented.");
+    }
+    blockquote(text: string): string {
+        throw new Error("Method not implemented.");
+    }
+    list(body: string, ordered: boolean, start: number): string {
+        throw new Error("Method not implemented.");
+    }
+    checkbox(checked: boolean): string {
+        throw new Error("Method not implemented.");
+    }
+    listitem(text: string): string {
+        throw new Error("Method not implemented.");
+    }
+
     public paragraph(text: string): string {
         return text + "\n";
     }

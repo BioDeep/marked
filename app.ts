@@ -5,6 +5,7 @@
 */
 const marked: Imarked = (function () {
 
+    let Parser: parser = new parser();
     let marked: Imarked = <any>function marked(src: string, opt?: option | markedCallback, callback?: markedCallback) {
         // throw error in case of non string input
         if (typeof src === 'undefined' || src === null) {

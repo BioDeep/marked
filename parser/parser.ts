@@ -37,7 +37,7 @@ class parser extends component {
         // use an InlineLexer with a TextRenderer to extract pure text
         this.inlineText = new inlineLexer(
             src.links,
-            merge({}, this.options, { renderer: new textRenderer() })
+            <any>helpers.merge({}, this.options, { renderer: new textRenderer() })
         );
         this.tokens = src.reverse();
 

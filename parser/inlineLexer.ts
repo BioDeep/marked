@@ -151,7 +151,7 @@ class inlineLexer extends component {
             // code
             if (cap = this.rules.code.exec(src)) {
                 src = src.substring(cap[0].length);
-                out += this.renderer.codespan(escape(cap[2].trim(), true));
+                out += this.renderer.codespan(helpers.escape.doescape(cap[2].trim(), true));
                 continue;
             }
 

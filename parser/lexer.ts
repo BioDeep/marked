@@ -83,7 +83,7 @@ class Lexer {
                 this.tokens.push(<Itoken>{
                     type: 'code',
                     text: !this.options.pedantic
-                        ? rtrim(cap, '\n')
+                        ? helpers.rtrim(cap, '\n')
                         : cap
                 });
                 continue;
@@ -284,7 +284,7 @@ class Lexer {
             // html
             if (cap = this.rules.html.exec(src)) {
                 src = src.substring(cap[0].length);
-                this.tokens.push({
+                this.tokens.push(<Itoken>{
                     type: this.options.sanitize
                         ? 'paragraph'
                         : 'html',

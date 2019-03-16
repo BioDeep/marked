@@ -4,6 +4,10 @@
         super(null);
     }
 
+    html(text: string): string {
+        throw new Error("Method not implemented.");
+    }
+
     public text(text: string): string {
         return `<pre>${text}</pre>`;
     }
@@ -37,7 +41,7 @@
         return '<blockquote>\n' + quote + '</blockquote>\n';
     };
 
-    public heading(text: string, level: string, raw: string): string {
+    public heading(text: string, level: number, raw: string): string {
         if (this.options.headerIds) {
             return '<h'
                 + level

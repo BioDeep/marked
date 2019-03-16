@@ -1,16 +1,10 @@
 ﻿interface Imarked {
-    (src: string, opt: option, callback: markedCallback);
 
     options: option;
-    defaults: option;
 
-    Parser: parser
-    Renderer: Renderer;
-    TextRenderer: textRenderer;
-
-    lexer: Lexer;
-    inlineLexer: inlineLexer;
-
+    (src: string, opt: option, callback: markedCallback);
+    
+    setOptions(opt: option): void;
     parse: Imarked;
 }
 
