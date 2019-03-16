@@ -21,6 +21,27 @@ class block extends Grammer {
         .replace(/bull/g, this.bullet)
         .getRegex();
 
+    /**
+     * Normal Block Grammar
+    */
+    normal: block;
+
+    /**
+     * GFM Block Grammar
+     */
+    gfm: block;
+
+    /**
+     * GFM + Tables Block Grammar
+     */
+
+    tables: block;
+
+    /**
+     * Pedantic grammar
+     */
+    pedantic: block;
+
     public constructor() {
         super();
 
@@ -53,7 +74,7 @@ class block extends Grammer {
             .getRegex();
 
         this.html = helpers.edit(this.html, 'i')
-            .replace('comment', this._comment)
+            .replace('comment', block._comment)
             .replace('tag', this._tag)
             .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
             .getRegex();
@@ -68,6 +89,42 @@ class block extends Grammer {
         this.blockquote = helpers.edit(this.blockquote)
             .replace('paragraph', this.paragraph)
             .getRegex();
+
+        this.normal = <any>helpers.merge({}, this);
+        this.gfm = <any>(function () {
+            var rule: Irule = <any>helpers.merge({}, this.normal, {
+                fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
+                paragraph: /^/,
+                heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
+            });
+
+            rule.paragraph = helpers.edit(this.paragraph)
+                .replace('(?!', '(?!'
+                    + rule.fences.source.replace('\\1', '\\2') + '|'
+                    + this.list.source.replace('\\1', '\\3') + '|')
+                .getRegex();
+
+            return rule
+        })();
+
+        this.tables = <any>helpers.merge({}, this.gfm, {
+            nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
+            table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
+        });
+
+        this.pedantic = <any>helpers.merge({}, this.normal, {
+            html: helpers.edit(
+                '^ *(?:comment *(?:\\n|\\s*$)'
+                + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
+                + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
+                .replace('comment', block._comment)
+                .replace(/tag/g, '(?!(?:'
+                    + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
+                    + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'
+                    + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
+                .getRegex(),
+            def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
+        });
     }
 
     private static blockHtml(): string {
@@ -81,62 +138,5 @@ class block extends Grammer {
             + '|<(?!script|pre|style)([a-z][\\w-]*)(?:attribute)*? */?>(?=\\h*\\n)[\\s\\S]*?(?:\\n{2,}|$)' // (7) open tag
             + '|</(?!script|pre|style)[a-z][\\w-]*\\s*>(?=\\h*\\n)[\\s\\S]*?(?:\\n{2,}|$)' // (7) closing tag
             + ')';
-    }
-
-    /**
-     * Normal Block Grammar
-     */
-
-    normal() {
-        return helpers.merge({}, block)
-    };
-
-    /**
-     * GFM Block Grammar
-     */
-    gfm() {
-        var rule: Irule = <any>helpers.merge({}, this.normal, {
-            fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
-            paragraph: /^/,
-            heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
-        });
-
-        rule.paragraph = helpers.edit(this.paragraph)
-            .replace('(?!', '(?!'
-                + rule.fences.source.replace('\\1', '\\2') + '|'
-                + this.list.source.replace('\\1', '\\3') + '|')
-            .getRegex();
-
-        return rule
-    }
-
-    /**
-     * GFM + Tables Block Grammar
-     */
-
-    tables() {
-        return helpers.merge({}, this.gfm, {
-            nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
-            table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
-        });
-    }
-
-    /**
-     * Pedantic grammar
-     */
-    pedantic() {
-        return helpers.merge({}, this.normal, {
-            html: helpers.edit(
-                '^ *(?:comment *(?:\\n|\\s*$)'
-                + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
-                + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
-                .replace('comment', this._comment)
-                .replace(/tag/g, '(?!(?:'
-                    + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
-                    + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'
-                    + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
-                .getRegex(),
-            def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
-        });
     }
 }

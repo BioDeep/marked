@@ -6,11 +6,10 @@ class Lexer {
 
     private tokens: string[];
 
-    public constructor(options: option) {
+    public constructor(private options: option) {
         this.tokens = [];
         this.tokens.links = Object.create(null);
-        this.options = options || marked.defaults;
-        this.rules = block.normal;
+        this.rules = options.block.normal;
 
         if (this.options.pedantic) {
             this.rules = block.pedantic;
