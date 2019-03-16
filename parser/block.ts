@@ -2,18 +2,70 @@
 /**
  * Block-Level Grammar
 */
-module block {
+class block extends Grammer {
 
-    const block = {
-        newline: /^\n+/,
-        code: /^( {4}[^\n]+\n*)+/,
-        fences: helpers.noop,
-        hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
-        heading: /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/,
-        nptable: helpers.noop,
-        blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
-        list: /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
-        html: '^ {0,3}(?:' // optional indentation
+    _label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
+    _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
+    bullet = /(?:[*+-]|\d{1,9}\.)/;
+    _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
+        + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
+        + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
+        + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
+        + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
+        + '|track|ul';
+    _comment = /<!--(?!-?>)[\s\S]*?-->/;
+
+    public constructor() {
+        super();
+
+        // initialize
+        this.newline = /^\n+/;
+        this.code = /^( {4}[^\n]+\n*)+/;
+        this.fences = <any>helpers.noop;
+        this.hr = /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/;
+        this.heading = /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/;
+        this.nptable = <any>helpers.noop;
+        this.blockquote = /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/;
+        this.list = /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/;
+        this.html = new RegExp(block.blockHtml());
+        this.def = /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/;
+        this.table = <any>helpers.noop;
+        this.lheading = /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/;
+        this.paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/;
+        this.text = /^[^\n]+/;
+
+        // edit and modify from base
+        this.def = helpers.edit(this.def)
+            .replace('label', this._label)
+            .replace('title', this._title)
+            .getRegex();
+
+        this.list = helpers.edit(this.list)
+            .replace(/bull/g, this.bullet)
+            .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
+            .replace('def', '\\n+(?=' + this.def.source + ')')
+            .getRegex();
+
+        this.html = helpers.edit(this.html, 'i')
+            .replace('comment', this._comment)
+            .replace('tag', this._tag)
+            .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
+            .getRegex();
+
+        this.paragraph = helpers.edit(this.paragraph)
+            .replace('hr', this.hr)
+            .replace('heading', this.heading)
+            .replace('lheading', this.lheading)
+            .replace('tag', this._tag) // pars can be interrupted by type (6) html blocks
+            .getRegex();
+
+        this.blockquote = helpers.edit(this.blockquote)
+            .replace('paragraph', this.paragraph)
+            .getRegex();
+    }
+
+    private static blockHtml(): string {
+        return '^ {0,3}(?:' // optional indentation
             + '<(script|pre|style)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
             + '|comment[^\\n]*(\\n+|$)' // (2)
             + '|<\\?[\\s\\S]*?\\?>\\n*' // (3)
@@ -22,79 +74,35 @@ module block {
             + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:\\n{2,}|$)' // (6)
             + '|<(?!script|pre|style)([a-z][\\w-]*)(?:attribute)*? */?>(?=\\h*\\n)[\\s\\S]*?(?:\\n{2,}|$)' // (7) open tag
             + '|</(?!script|pre|style)[a-z][\\w-]*\\s*>(?=\\h*\\n)[\\s\\S]*?(?:\\n{2,}|$)' // (7) closing tag
-            + ')',
-        def: /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/,
-        table: helpers.noop,
-        lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
-        paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/,
-        text: /^[^\n]+/
-    };
+            + ')';
+    }
 
-    export const _label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
-    export const _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
-    export const def = helpers.edit(block.def)
-        .replace('label', _label)
-        .replace('title', _title)
-        .getRegex();
-
-    export const bullet = /(?:[*+-]|\d{1,9}\.)/;
-    export const item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
-        .replace(/bull/g, bullet)
-        .getRegex();
-
-    export const list = helpers.edit(block.list)
-        .replace(/bull/g, bullet)
-        .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
-        .replace('def', '\\n+(?=' + block.def.source + ')')
-        .getRegex();
-
-    export const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
-        + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
-        + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
-        + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
-        + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
-        + '|track|ul';
-    export const _comment = /<!--(?!-?>)[\s\S]*?-->/;
-    export const html = helpers.edit(block.html, 'i')
-        .replace('comment', _comment)
-        .replace('tag', _tag)
-        .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
-        .getRegex();
-
-    export const paragraph = helpers.edit(block.paragraph)
-        .replace('hr', block.hr)
-        .replace('heading', block.heading)
-        .replace('lheading', block.lheading)
-        .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
-        .getRegex();
-
-    export const blockquote = helpers.edit(block.blockquote)
-        .replace('paragraph', block.paragraph)
+    item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
+        .replace(/bull/g, this.bullet)
         .getRegex();
 
     /**
      * Normal Block Grammar
      */
 
-    export function normal() {
+    normal() {
         return helpers.merge({}, block)
     };
 
     /**
      * GFM Block Grammar
      */
-
-    export function gfm() {
-        var rule = helpers.merge({}, normal, {
+    gfm() {
+        var rule = helpers.merge({}, this.normal, {
             fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
             paragraph: /^/,
             heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
         });
 
-        rule.paragraph = helpers.edit(block.paragraph)
+        rule.paragraph = helpers.edit(this.paragraph)
             .replace('(?!', '(?!'
                 + rule.fences.source.replace('\\1', '\\2') + '|'
-                + block.list.source.replace('\\1', '\\3') + '|')
+                + this.list.source.replace('\\1', '\\3') + '|')
             .getRegex();
 
         return rule
@@ -104,8 +112,8 @@ module block {
      * GFM + Tables Block Grammar
      */
 
-    export function tables() {
-        return helpers.merge({}, gfm, {
+    tables() {
+        return helpers.merge({}, this.gfm, {
             nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
             table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
         });
@@ -114,14 +122,13 @@ module block {
     /**
      * Pedantic grammar
      */
-
-    export function pedantic() {
-        return helpers.merge({}, normal, {
+    pedantic() {
+        return helpers.merge({}, this.normal, {
             html: helpers.edit(
                 '^ *(?:comment *(?:\\n|\\s*$)'
                 + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
                 + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
-                .replace('comment', _comment)
+                .replace('comment', this._comment)
                 .replace(/tag/g, '(?!(?:'
                     + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
                     + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'

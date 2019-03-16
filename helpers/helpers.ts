@@ -1,13 +1,14 @@
 ﻿module helpers {
 
-    export function edit(regex: RegExp | string, opt = '') {
+    export function edit(regex: RegExp | string, opt = ''): IEdits {
         regex = (<RegExp>regex).source || regex;
 
-        return {
+        return <IEdits>{
             replace: function (name: string | RegExp, val: RegExp | string) {
                 val = (<RegExp>val).source || val;
                 val = (<string>val).replace(/(^|[^\[])\^/g, '$1');
                 regex = (<string>regex).replace(name, val);
+
                 return this;
             },
             getRegex: function () {
