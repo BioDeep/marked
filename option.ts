@@ -5,7 +5,7 @@
     gfm: boolean;
     headerIds: boolean;
     headerPrefix: string;
-    highlight: (code: string, lang: string) => string;
+    highlight: (code: string, lang: string, callback?: highlightCallback) => string;
     langPrefix: string;
     mangle: boolean;
     pedantic: boolean;
@@ -46,4 +46,8 @@
             block: new block()
         };
     }
+}
+
+interface highlightCallback {
+    (err: string, code: number): void;
 }
