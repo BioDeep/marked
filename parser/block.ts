@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="../abstract.ts" />
+
 /**
  * Block-Level Grammar
 */
@@ -14,6 +15,10 @@ class block extends Grammer {
         + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
         + '|track|ul';
     _comment = /<!--(?!-?>)[\s\S]*?-->/;
+
+    item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
+        .replace(/bull/g, this.bullet)
+        .getRegex();
 
     public constructor() {
         super();
@@ -77,10 +82,6 @@ class block extends Grammer {
             + ')';
     }
 
-    item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
-        .replace(/bull/g, this.bullet)
-        .getRegex();
-
     /**
      * Normal Block Grammar
      */
@@ -93,7 +94,7 @@ class block extends Grammer {
      * GFM Block Grammar
      */
     gfm() {
-        var rule = helpers.merge({}, this.normal, {
+        var rule: Irule = <any>helpers.merge({}, this.normal, {
             fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
             paragraph: /^/,
             heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/

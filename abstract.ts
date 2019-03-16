@@ -21,3 +21,9 @@ interface IEdits {
     replace(name: string | RegExp, val: RegExp | string): IEdits;
     getRegex(): RegExp;
 }
+
+interface Irule {
+    fences: RegExp;
+    paragraph: RegExp;
+    heading: RegExp;
+}
