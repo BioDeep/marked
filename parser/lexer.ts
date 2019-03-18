@@ -11,7 +11,7 @@ class Lexer {
         let block = options.block;
 
         this.tokens = [];
-        this.tokens.links = Object.create(null);
+        (<any>this.tokens).links = Object.create(null);
         this.rules = options.block.normal;
 
         if (this.options.pedantic) {
@@ -294,8 +294,8 @@ class Lexer {
                 src = src.substring(cap[0].length);
                 if (cap[3]) cap[3] = cap[3].substring(1, cap[3].length - 1);
                 tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
-                if (!this.tokens.links[tag]) {
-                    this.tokens.links[tag] = {
+                if (!(<any>this.tokens).links[tag]) {
+                    (<any>this.tokens).links[tag] = {
                         href: cap[2],
                         title: cap[3]
                     };

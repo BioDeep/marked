@@ -10,6 +10,7 @@ class parser extends component {
     private tokens: Itoken[];
     private inline: inlineLexer;
     private token: Itoken;
+    private inlineText: inlineLexer;
 
     public constructor(options: option = option.Defaults) {
         super(options);
@@ -25,10 +26,10 @@ class parser extends component {
      * Parse Loop
     */
     public parse(src: Itoken[]): string {
-        this.inline = new inlineLexer(src.links, this.options);
+        this.inline = new inlineLexer((<any>src).links, this.options);
         // use an InlineLexer with a TextRenderer to extract pure text
         this.inlineText = new inlineLexer(
-            src.links,
+            (<any>src).links,
             <any>helpers.merge({}, this.options, { renderer: new textRenderer() })
         );
         this.tokens = src.reverse();
