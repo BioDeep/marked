@@ -11,7 +11,7 @@
     pedantic: boolean;
     renderer: Renderer;
     sanitize: boolean;
-    sanitizer: boolean;
+    sanitizer?: (text: string) => string;
     silent: boolean;
     smartLists: boolean;
     smartypants: boolean;
