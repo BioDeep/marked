@@ -12,7 +12,7 @@ class parser extends component {
     private token: Itoken;
     private inlineText: inlineLexer;
 
-    public constructor(options: option = option.Defaults) {
+    public constructor(options: option = null) {
         super(options);
 
         this.tokens = [];

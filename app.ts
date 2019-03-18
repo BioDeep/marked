@@ -5,7 +5,7 @@
 */
 const marked: Imarked = (function () {
 
-    let marked: Imarked = <any>function marked(src: string, opt?: option | markedCallback, callback?: markedCallback) {
+    let marked: Imarked = <any>function marked(src: string, opt: option | markedCallback = option.Defaults, callback: markedCallback = null) {
         // throw error in case of non string input
         if (typeof src === 'undefined' || src === null) {
             throw new Error('marked(): input parameter is undefined or null');
@@ -36,7 +36,7 @@ const marked: Imarked = (function () {
 
             pending = tokens.length;
 
-            var done = function (err?: string) {
+            var done = function (err: string = null) {
                 if (err) {
                     (<option>opt).highlight = highlight;
                     return callback(err);

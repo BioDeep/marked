@@ -10,7 +10,7 @@ class inlineLexer extends component {
     private inLink: boolean;
     private inRawBlock: boolean;
 
-    public constructor(links: string[], options: option = option.Defaults) {
+    public constructor(links: string[], options: option = null) {
         super(options);
 
         let inline: inline = options.inline;
