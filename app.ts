@@ -5,7 +5,6 @@
 */
 const marked: Imarked = (function () {
 
-    let Parser: parser = new parser();
     let marked: Imarked = <any>function marked(src: string, opt?: option | markedCallback, callback?: markedCallback) {
         // throw error in case of non string input
         if (typeof src === 'undefined' || src === null) {
@@ -25,12 +24,12 @@ const marked: Imarked = (function () {
             opt = <option>helpers.merge({}, option.Defaults, opt || {});
 
             var highlight = opt.highlight,
-                tokens,
-                pending,
+                tokens: Itoken[],
+                pending: number,
                 i = 0;
 
             try {
-                tokens = Lexer.lex(src, opt);
+                tokens = new Lexer(opt).lex(src);
             } catch (e) {
                 return callback(e);
             }
@@ -46,7 +45,7 @@ const marked: Imarked = (function () {
                 var out: string;
 
                 try {
-                    out = Parser.parse(tokens, opt);
+                    out = new parser(<option>opt).parse(tokens);
                 } catch (e) {
                     err = e;
                 }
@@ -67,7 +66,7 @@ const marked: Imarked = (function () {
             if (!pending) return done();
 
             for (; i < tokens.length; i++) {
-                (function (token) {
+                (function (token: Itoken) {
                     if (token.type !== 'code') {
                         return --pending || done();
                     }
@@ -76,7 +75,7 @@ const marked: Imarked = (function () {
                         if (code == null || code === token.text) {
                             return --pending || done();
                         }
-                        token.text = code;
+                        token.text = <string>code;
                         token.escaped = true;
                         --pending || done();
                     });
@@ -87,7 +86,7 @@ const marked: Imarked = (function () {
         }
         try {
             if (opt) opt = <option>helpers.merge({}, option.Defaults, opt);
-            return Parser.parse(Lexer.lex(src, opt), opt);
+            return new parser(opt).parse(new Lexer(opt).lex(src));
         } catch (e) {
             e.message += '\nPlease report this to https://github.com/markedjs/marked.';
             if ((opt || option.Defaults).silent) {

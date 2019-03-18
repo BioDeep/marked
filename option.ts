@@ -49,5 +49,5 @@
 }
 
 interface highlightCallback {
-    (err: string, code: number): void;
+    (err: string, code: number | string): void;
 }

@@ -22,17 +22,9 @@ class parser extends component {
     }
 
     /**
-     * Static Parse Method
-    */
-    public static parse(src, options) {
-        var parser = new Parser(options);
-        return parser.parse(src);
-    }
-
-    /**
      * Parse Loop
     */
-    public parse(src: string): string {
+    public parse(src: Itoken[]): string {
         this.inline = new inlineLexer(src.links, this.options);
         // use an InlineLexer with a TextRenderer to extract pure text
         this.inlineText = new inlineLexer(

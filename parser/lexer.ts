@@ -25,11 +25,6 @@ class Lexer {
         }
     }
 
-    public static lex = function (src, options) {
-        var lexer = new Lexer(options);
-        return lexer.lex(src);
-    };
-
     /**
      * Preprocessing
     */
