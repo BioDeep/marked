@@ -1,4 +1,13 @@
-﻿/**
+﻿/// <reference path="./option.ts" />
+/// <reference path="./helpers/escape.ts" />
+/// <reference path="./helpers/helpers.ts" />
+/// <reference path="./parser/block.ts" />
+/// <reference path="./parser/inline.ts" />
+/// <reference path="./parser/inlineLexer.ts" />
+/// <reference path="./parser/lexer.ts" />
+/// <reference path="./parser/parser.ts" />
+
+/**
  * marked - a markdown parser
  * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked

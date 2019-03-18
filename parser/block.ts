@@ -91,18 +91,20 @@ class block extends Grammer {
             .replace('paragraph', this.paragraph)
             .getRegex();
 
-        this.normal = <any>helpers.merge({}, this);
+        var vm = this;
+
+        this.normal = <any>helpers.merge({}, vm);
         this.gfm = <any>(function () {
-            var rule: Irule = <any>helpers.merge({}, this.normal, {
+            var rule: Irule = <any>helpers.merge({}, vm.normal, {
                 fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
                 paragraph: /^/,
                 heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
             });
 
-            rule.paragraph = helpers.edit(this.paragraph)
+            rule.paragraph = helpers.edit(rule.paragraph)
                 .replace('(?!', '(?!'
                     + rule.fences.source.replace('\\1', '\\2') + '|'
-                    + this.list.source.replace('\\1', '\\3') + '|')
+                    + vm.list.source.replace('\\1', '\\3') + '|')
                 .getRegex();
 
             return rule
