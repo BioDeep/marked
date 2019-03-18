@@ -1,0 +1,16 @@
+<div id="display"></div>
+
+<script type="text/javascript" src="../build/marked.js"></script>
+<script type="text/javascript">
+	var md = "#Hello world\n" + 
+	"\n" + 
+	"+ yes\n" + 
+	"+ no\n" + 
+	"+ ok\n" + 
+	"\n" + 
+	"> hahahahah\n" +
+	"> ccccccc"
+
+	document.getElementById("display").innerHTML = marked(md);
+</script>
+
