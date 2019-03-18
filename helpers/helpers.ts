@@ -70,7 +70,7 @@
     export function merge(obj: {}, ...args: {}[]) {
         var target, key: string;
 
-        for (var i = 1; i < args.length; i++) {
+        for (var i = 0; i < args.length; i++) {
             target = args[i];
 
             for (key in target) {
