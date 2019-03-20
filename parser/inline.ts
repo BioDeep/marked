@@ -72,24 +72,26 @@ class inline extends Grammer {
             .replace('label', this._label)
             .getRegex();
 
+        var vm = this;
+
         this.normal = <any>helpers.merge({}, this);
         this.pedantic = <any>helpers.merge({}, this.normal, {
             strong: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
             em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/,
             link: helpers.edit(/^!?\[(label)\]\((.*?)\)/)
-                .replace('label', this._label)
+                .replace('label', vm._label)
                 .getRegex(),
             reflink: helpers.edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
-                .replace('label', this._label)
+                .replace('label', vm._label)
                 .getRegex()
         });
         this.gfm = <any>helpers.merge({}, this.normal, {
-            escape: helpers.edit(this.escape).replace('])', '~|])').getRegex(),
+            escape: helpers.edit(vm.escape).replace('])', '~|])').getRegex(),
             _extended_email: /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/,
             url: /^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,
             _backpedal: /(?:[^?!.,:;*_~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_~)]+(?!$))+/,
             del: /^~+(?=\S)([\s\S]*?\S)~+/,
-            text: helpers.edit(this.text)
+            text: helpers.edit(vm.text)
                 .replace(']|', '~]|')
                 .replace('|$', '|https?://|ftp://|www\\.|[a-zA-Z0-9.!#$%&\'*+/=?^_`{\\|}~-]+@|$')
                 .getRegex()
@@ -98,8 +100,8 @@ class inline extends Grammer {
             .replace('email', (<any>this.gfm)._extended_email)
             .getRegex();
         this.breaks = <any>helpers.merge({}, this.gfm, {
-            br: helpers.edit(this.br).replace('{2,}', '*').getRegex(),
-            text: helpers.edit(this.gfm.text).replace('{2,}', '*').getRegex()
+            br: helpers.edit(vm.br).replace('{2,}', '*').getRegex(),
+            text: helpers.edit(vm.gfm.text).replace('{2,}', '*').getRegex()
         });
     }
 

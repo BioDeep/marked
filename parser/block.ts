@@ -103,7 +103,7 @@ class block extends Grammer {
                 heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
             });
 
-            rule.paragraph = helpers.edit(rule.paragraph)
+            rule.paragraph = helpers.edit(vm.paragraph)
                 .replace('(?!', '(?!'
                     + rule.fences.source.replace('\\1', '\\2') + '|'
                     + vm.list.source.replace('\\1', '\\3') + '|')
