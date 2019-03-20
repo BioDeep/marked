@@ -1,20 +1,23 @@
 ﻿module helpers {
 
     export function edit(regex: RegExp | string, opt = ''): IEdits {
-        regex = (<RegExp>regex).source || regex;
+        let editor: IEdits;
 
-        return <IEdits>{
+        regex = (<RegExp>regex).source || regex;
+        editor = <IEdits>{
             replace: function (name: string | RegExp, val: RegExp | string) {
                 val = (<RegExp>val).source || val;
                 val = (<string>val).replace(/(^|[^\[])\^/g, '$1');
                 regex = (<string>regex).replace(name, val);
 
-                return this;
+                return editor;
             },
             getRegex: function () {
                 return new RegExp(<string>regex, opt);
             }
         };
+
+        return editor;
     }
 
     export function cleanUrl(sanitize: boolean, base: string, href: string): string {

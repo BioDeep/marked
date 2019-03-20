@@ -18,9 +18,7 @@ class block extends Grammer {
     public static _comment = /<!--(?!-?>)[\s\S]*?-->/;
     public static bullet = /(?:[*+-]|\d{1,9}\.)/;
 
-    item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
-        .replace(/bull/g, block.bullet)
-        .getRegex();
+    item: RegExp;
 
     /**
      * Normal Block Grammar
@@ -72,6 +70,10 @@ class block extends Grammer {
             .replace(/bull/g, block.bullet)
             .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')
             .replace('def', '\\n+(?=' + this.def.source + ')')
+            .getRegex();
+
+        this.item = helpers.edit(/^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/, 'gm')
+            .replace(/bull/g, block.bullet)
             .getRegex();
 
         this.html = helpers.edit(this.html, 'i')
