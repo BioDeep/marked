@@ -5,11 +5,12 @@
     }
 
     html(text: string): string {
-        throw new Error("Method not implemented.");
+        return text;
     }
 
     public text(text: string): string {
-        return `<pre>${text}</pre>`;
+        // return `<pre>${text}</pre>`;
+        return text;
     }
 
     public code(code: string, infostring, escaped: boolean): string {

@@ -1,16 +1,40 @@
 <div id="display"></div>
+<script type="plain/text" id="markdown">
+# Hello world
+	
+### Table12 
+	
++ yes
++ no
++ ok
+	
+> hahahahah
+>
+> ccccccc
+
+
+|name|value|note|
+|----|-----|----|
+|hello||world|
+|a|b|This is **bold**, *em*|
+
+![note about](image.png)
+
+```vbnet
+Dim message As string = "Hello World!"
+```
+
+###### another code
+
+```R
+# this is code comment test
+```
+</script>
 
 <script type="text/javascript" src="../build/marked.js"></script>
 <script type="text/javascript">
-	var md = "#Hello world\n" + 
-	"\n" + 
-	"+ yes\n" + 
-	"+ no\n" + 
-	"+ ok\n" + 
-	"\n" + 
-	"> hahahahah\n" +
-	"> ccccccc"
-
+	var md = document.getElementById("markdown").innerText;
+console.log(md);
 	document.getElementById("display").innerHTML = marked(md);
 </script>
 

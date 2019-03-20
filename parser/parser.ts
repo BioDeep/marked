@@ -39,7 +39,7 @@ class parser extends component {
             out += this.tok();
         }
 
-        return out;
+        return decodeURIComponent(out);
     };
 
     /**
