@@ -26,20 +26,22 @@ class parser extends component {
      * Parse Loop
     */
     public parse(src: Itoken[]): string {
-        this.inline = new inlineLexer((<any>src).links, this.options);
+        let out: string = "";
+        let links = (<any>src).links;
+        let textOpt: option = <any>helpers.merge({}, this.options, {
+            renderer: new textRenderer()
+        });
+
+        this.inline = new inlineLexer(links, this.options);
         // use an InlineLexer with a TextRenderer to extract pure text
-        this.inlineText = new inlineLexer(
-            (<any>src).links,
-            <any>helpers.merge({}, this.options, { renderer: new textRenderer() })
-        );
+        this.inlineText = new inlineLexer(links, textOpt);
         this.tokens = src.reverse();
 
-        var out = '';
         while (this.next()) {
             out += this.tok();
         }
 
-        return decodeURIComponent(out);
+        return out;
     };
 
     /**
@@ -81,10 +83,8 @@ class parser extends component {
                 return this.renderer.hr();
             }
             case 'heading': {
-                return this.renderer.heading(
-                    this.inline.output(this.token.text),
-                    this.token.depth,
-                    unescape(this.inlineText.output(this.token.text)));
+                let raw: string = this.inlineText.output(this.token.text);
+                return this.renderer.heading(raw, this.token.depth, raw);
             }
             case 'code': {
                 return this.renderer.code(this.token.text,

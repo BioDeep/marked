@@ -58,7 +58,7 @@ class inlineLexer extends component {
             text,
             href,
             title,
-            cap,
+            cap: RegExpExecArray,
             prevCapZero;
 
         while (src) {
@@ -222,7 +222,7 @@ class inlineLexer extends component {
             }
         }
 
-        return out;
+        return unescape(out);
     };
 
     public escapes(text: string) {

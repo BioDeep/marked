@@ -15,7 +15,7 @@
         export const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
         export const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
 
-        export function doescape(html: string, encode: boolean): string {
+        export function doescape(html: string, encode: boolean): string {           
             if (encode) {
                 if (escapeTest.test(html)) {
                     return html.replace(escapeReplace, ch => replacements[ch]);
