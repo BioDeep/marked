@@ -142,10 +142,15 @@
         return out;
     };
 
+    public static hrefSolver: (href: string) => string;
+
     public image(href, title, text) {
         href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+
         if (href === null) {
             return text;
+        } else if (htmlRenderer.hrefSolver && htmlRenderer.hrefSolver != undefined) {
+            href = htmlRenderer.hrefSolver(href);
         }
 
         var out = '<img src="' + href + '" alt="' + text + '"';
