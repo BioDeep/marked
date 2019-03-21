@@ -1,0 +1,15 @@
+<div id="display"></div>
+<script type="plain/text" id="markdown">
+|name|value|note|
+|----|-----|----|
+|hello|![note about](image.png)|world|
+|a|b|This is **bold**, *em*|
+</script>
+
+<script type="text/javascript" src="../build/marked.js"></script>
+<script type="text/javascript">
+	var md = document.getElementById("markdown").innerText;
+console.log(md);
+	document.getElementById("display").innerHTML = marked(md);
+</script>
+

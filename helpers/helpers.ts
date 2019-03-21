@@ -86,7 +86,7 @@
         return obj;
     }
 
-    export function splitCells(tableRow: string, count: number = 0): string[] {
+    export function splitCells(tableRow: string, count?: number): string[] {
         // ensure that every cell-delimiting pipe has a space
         // before it to distinguish it from an escaped pipe
         var row: string = tableRow.replace(/\|/g, function (match, offset, str) {

@@ -45,7 +45,7 @@ class Lexer {
         src = src.replace(/^ +$/gm, '');
         var next,
             loose,
-            cap,
+            cap: RegExpExecArray | string | RegExpMatchArray,
             bull,
             b,
             item,

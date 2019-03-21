@@ -95,7 +95,12 @@ const marked: Imarked = (function () {
         }
         try {
             if (opt) opt = <option>helpers.merge({}, option.Defaults, opt);
-            return new parser(opt).parse(new Lexer(opt).lex(src));
+
+            let lexer = new Lexer(opt)
+            let tokens = lexer.lex(src);
+            let mdparser = new parser(opt);
+
+            return mdparser.parse(tokens);
         } catch (e) {
             e.message += '\nPlease report this to https://github.com/markedjs/marked.';
             if ((opt || option.Defaults).silent) {
