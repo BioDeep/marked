@@ -1,4 +1,4 @@
-﻿module helpers {
+﻿module markedjs.helpers {
 
     export function edit(regex: RegExp | string, opt = ''): IEdits {
         let editor: IEdits;

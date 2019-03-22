@@ -1,4 +1,4 @@
-﻿module helpers {
+﻿module markedjs.helpers {
 
     export module escape {
 

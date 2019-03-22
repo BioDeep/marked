@@ -1,8 +1,11 @@
-﻿abstract class component {
+﻿namespace markedjs {
 
-    public options: option;
+    export abstract class component {
 
-    public constructor(opt: option) {
-        this.options = opt;
+        public options: option;
+
+        public constructor(opt: option) {
+            this.options = opt;
+        }
     }
 }

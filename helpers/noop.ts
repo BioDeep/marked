@@ -1,4 +1,4 @@
-﻿module helpers {
+﻿module markedjs.helpers {
 
     /**
      * 模拟正则表达式，因为正则表达式没有空操作，所以会需要用这个来进行模拟

@@ -1,13 +1,16 @@
-﻿interface Imarked {
+﻿namespace markedjs {
 
-    options: option;
+    export interface Imarked {
 
-    (src: string, opt?: option, callback?: markedCallback): string;
+        options: option;
 
-    setOptions(opt: option): void;
-    parse: Imarked;
-}
+        (src: string, opt?: option, callback?: markedCallback): string;
 
-interface markedCallback {
-    (err: string, output?: string): void;
+        setOptions(opt: option): void;
+        parse: Imarked;
+    }
+
+    export interface markedCallback {
+        (err: string, output?: string): void;
+    }
 }
