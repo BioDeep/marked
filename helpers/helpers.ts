@@ -71,7 +71,8 @@
     const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
     export function merge(obj: {}, ...args: {}[]) {
-        var target, key: string;
+        var target: object;
+        var key: string;
 
         for (var i = 0; i < args.length; i++) {
             target = args[i];

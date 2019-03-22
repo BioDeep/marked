@@ -2,8 +2,8 @@
 
     options: option;
 
-    (src: string, opt: option, callback: markedCallback);
-    
+    (src: string, opt: option, callback: markedCallback): string;
+
     setOptions(opt: option): void;
     parse: Imarked;
 }
