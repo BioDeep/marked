@@ -12,16 +12,16 @@
  * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
 */
-const marked: Imarked = (function () {
+const marked: markedjs.Imarked = (function () {
 
-    let markedCallback = function (src: string, opt: option, callback: markedCallback) {
+    let markedCallback = function (src: string, opt: markedjs.option, callback: markedjs.markedCallback) {
         var highlight = opt.highlight,
-            tokens: Itoken[],
+            tokens: markedjs.Itoken[],
             pending: number,
             i = 0;
 
         try {
-            tokens = new Lexer(opt).lex(src);
+            tokens = new markedjs.Lexer(opt).lex(src);
         } catch (e) {
             return callback(e);
         }
@@ -30,19 +30,19 @@ const marked: Imarked = (function () {
 
         var done = function (err: string = null) {
             if (err) {
-                (<option>opt).highlight = highlight;
+                (<markedjs.option>opt).highlight = highlight;
                 return callback(err);
             }
 
             var out: string;
 
             try {
-                out = new parser(<option>opt).parse(tokens);
+                out = new markedjs.parser(<markedjs.option>opt).parse(tokens);
             } catch (e) {
                 err = e;
             }
 
-            (<option>opt).highlight = highlight;
+            (<markedjs.option>opt).highlight = highlight;
 
             return err
                 ? callback(err)
@@ -58,7 +58,7 @@ const marked: Imarked = (function () {
         if (!pending) return done();
 
         for (; i < tokens.length; i++) {
-            (function (token: Itoken) {
+            (function (token: markedjs.Itoken) {
                 if (token.type !== 'code') {
                     return --pending || done();
                 }
@@ -75,7 +75,10 @@ const marked: Imarked = (function () {
         }
     }
 
-    let marked: Imarked = <any>function marked(src: string, opt: option | markedCallback = option.Defaults, callback: markedCallback = null): string {
+    let marked: markedjs.Imarked = <any>function marked(src: string,
+        opt: markedjs.option | markedjs.markedCallback = markedjs.option.Defaults,
+        callback: markedjs.markedCallback = null): string {
+
         // throw error in case of non string input
         if (typeof src === 'undefined' || src === null) {
             throw new Error('marked(): input parameter is undefined or null');
@@ -87,27 +90,27 @@ const marked: Imarked = (function () {
 
         if (callback || typeof opt === 'function') {
             if (!callback) {
-                callback = <markedCallback>opt;
+                callback = <markedjs.markedCallback>opt;
                 opt = null;
             }
 
-            opt = <option>helpers.merge({}, option.Defaults, opt || {});
+            opt = <markedjs.option>markedjs.helpers.merge({}, markedjs.option.Defaults, opt || {});
             markedCallback(src, opt, callback);
         } else {
             try {
-                if (opt) opt = <option>helpers.merge({}, option.Defaults, opt);
+                if (opt) opt = <markedjs.option>markedjs.helpers.merge({}, markedjs.option.Defaults, opt);
 
-                let lexer = new Lexer(opt)
+                let lexer = new markedjs.Lexer(opt)
                 let tokens = lexer.lex(src);
-                let mdparser = new parser(opt);
+                let mdparser = new markedjs.parser(opt);
 
                 return mdparser.parse(tokens);
             } catch (e) {
                 e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
-                if ((opt || option.Defaults).silent) {
+                if ((opt || markedjs.option.Defaults).silent) {
                     return '<p>An error occurred:</p><pre>'
-                        + helpers.escape.doescape(e.message + '', true)
+                        + markedjs.helpers.escape.doescape(e.message + '', true)
                         + '</pre>';
                 }
 
