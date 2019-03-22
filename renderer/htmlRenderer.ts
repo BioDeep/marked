@@ -13,7 +13,7 @@
         return text;
     }
 
-    public code(code: string, infostring, escaped: boolean): string {
+    public code(code: string, infostring: string, escaped: boolean): string {
         var lang = (infostring || '').match(/\S*/)[0];
 
         if (this.options.highlight) {
@@ -38,7 +38,7 @@
             + '</code></pre>\n';
     };
 
-    public blockquote(quote) {
+    public blockquote(quote: string): string {
         return '<blockquote>\n' + quote + '</blockquote>\n';
     };
 
@@ -59,11 +59,11 @@
         return '<h' + level + '>' + text + '</h' + level + '>\n';
     };
 
-    public hr() {
+    public hr(): string {
         return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
     };
 
-    public list(body, ordered, start) {
+    public list(body: string, ordered: boolean, start: number): string {
         var type = ordered ? 'ol' : 'ul',
             startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
         return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
@@ -73,7 +73,7 @@
         return '<li>' + text + '</li>\n';
     };
 
-    public checkbox(checked) {
+    public checkbox(checked: boolean): string {
         return '<input '
             + (checked ? 'checked="" ' : '')
             + 'disabled="" type="checkbox"'
@@ -85,7 +85,7 @@
         return '<p>' + text + '</p>\n';
     };
 
-    public table(header, body) {
+    public table(header: string, body: string) {
         if (body) body = '<tbody>' + body + '</tbody>';
 
         return '<table>\n'
@@ -96,11 +96,11 @@
             + '</table>\n';
     };
 
-    public tablerow(content) {
+    public tablerow(content: string): string {
         return '<tr>\n' + content + '</tr>\n';
     };
 
-    public tablecell(content, flags) {
+    public tablecell(content: string, flags: { header: boolean, align: string }): string {
         var type = flags.header ? 'th' : 'td';
         var tag = flags.align
             ? '<' + type + ' align="' + flags.align + '">'
@@ -109,27 +109,27 @@
     };
 
     // span level renderer
-    public strong(text) {
+    public strong(text: string): string {
         return '<strong>' + text + '</strong>';
     };
 
-    public em(text) {
+    public em(text: string): string {
         return '<em>' + text + '</em>';
     };
 
-    public codespan(text) {
+    public codespan(text: string): string {
         return '<code>' + text + '</code>';
     };
 
-    public br() {
+    public br(): string {
         return this.options.xhtml ? '<br/>' : '<br>';
     };
 
-    public del(text) {
+    public del(text: string): string {
         return '<del>' + text + '</del>';
     };
 
-    public link(href, title, text) {
+    public link(href: string, title: string, text: string): string {
         href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
         if (href === null) {
             return text;
@@ -144,7 +144,7 @@
 
     public static hrefSolver: (href: string) => string;
 
-    public image(href, title, text) {
+    public image(href: string, title: string, text: string): string {
         href = helpers.cleanUrl(this.options.sanitize, this.options.baseUrl, href);
 
         if (href === null) {
