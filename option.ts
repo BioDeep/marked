@@ -19,6 +19,7 @@
         smartypants: boolean;
         tables: boolean;
         xhtml: boolean;
+        debug: boolean = false;
 
         block: block;
         inline: inline;
@@ -42,6 +43,7 @@
                 smartypants: false,
                 tables: true,
                 xhtml: false,
+                debug: false,
 
                 // grammers
                 inline: new inline(),

@@ -103,8 +103,14 @@ const marked: markedjs.Imarked = (function () {
                 let lexer = new markedjs.Lexer(opt)
                 let tokens = lexer.lex(src);
                 let mdparser = new markedjs.parser(opt);
+                let output = mdparser.parse(tokens);
 
-                return mdparser.parse(tokens);
+                if (opt.debug) {
+                    console.log(output);
+                }
+
+                return output;
+
             } catch (e) {
                 e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
