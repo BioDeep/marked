@@ -19,7 +19,7 @@ namespace markedjs {
 
             this.tokens = [];
             this.token = null;
-            this.options.renderer = this.options.renderer || new htmlRenderer();
+            this.options.renderer = this.options.renderer || new htmlRenderer(this.options);
             this.renderer = this.options.renderer;
             this.renderer.options = this.options;
         }

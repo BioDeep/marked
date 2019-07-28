@@ -19,7 +19,7 @@ namespace markedjs {
 
             this.links = links;
             this.rules = options.inline.normal;
-            this.renderer = this.options.renderer || new htmlRenderer();
+            this.renderer = this.options.renderer || new htmlRenderer(this.options);
             this.renderer.options = this.options;
 
             if (!this.links) {
