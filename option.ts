@@ -8,6 +8,7 @@
         headerIds: boolean;
         headerPrefix: string;
         highlight: (code: string, lang: string, callback?: highlightCallback) => string;
+        addcodeTag: boolean;
         langPrefix: string;
         mangle: boolean;
         pedantic: boolean;
@@ -44,6 +45,7 @@
                 tables: true,
                 xhtml: false,
                 debug: false,
+                addcodeTag: true,
 
                 // grammers
                 inline: new inline(),

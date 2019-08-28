@@ -2,8 +2,8 @@
 
     export class htmlRenderer extends component implements Renderer {
 
-        public constructor() {
-            super(null);
+        public constructor(opt: option) {
+            super(opt);
         }
 
         html(text: string): string {
@@ -26,18 +26,23 @@
                 }
             }
 
-            if (!lang) {
-                return '<pre><code>'
-                    + (escaped ? code : helpers.escape.doescape(code, true))
-                    + '</code></pre>';
-            }
+            code = (escaped ? code : helpers.escape.doescape(code, true));
 
-            return '<pre><code class="'
-                + this.options.langPrefix
-                + helpers.escape.doescape(lang, true)
-                + '">'
-                + (escaped ? code : helpers.escape.doescape(code, true))
-                + '</code></pre>\n';
+            if (!lang) {
+                if (this.options.addcodeTag) {
+                    return `<pre><code>${code}</code></pre>`;
+                } else {
+                    return `<pre>${code}</pre>`;
+                }
+            } else {
+                lang = this.options.langPrefix + helpers.escape.doescape(lang, true);
+
+                if (this.options.addcodeTag) {
+                    return `<pre><code class="${lang}">${code}</code></pre>\n`;
+                } else {
+                    return `<pre class="${lang}">${code}</pre>\n`;
+                }
+            }
         };
 
         public blockquote(quote: string): string {
